@@ -1,12 +1,14 @@
 {% extends 'portfolio/base.html' %}
 {% load humanize %}
+{{ floatvalue|floatformat:2|intcomma }}
 {% load mathfilters %}
+{% load staticfiles %}
 {% block content %}
     <html>
     <head>
         <meta charset="UTF-8">
-        <title>Eagle Financial</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <title>Eagle Financial Services</title>
+        <link rel="stylesheet" href="styles.css">
 
     </head>
     <body>
@@ -32,7 +34,7 @@
     </div>
 
     <div class="row">
-        <h2 style="padding-left: 15Px">Overall Portfolio Information</h2>
+        <h2 style="padding-left: 15Px">Overall Portfolio Outlook</h2>
     </div>
     <div class="row">
         <table class="table table-striped table-bordered table-hover">
@@ -40,18 +42,14 @@
             <tr class="bg-info">
                 <th>Portfolio Initial Investments</th>
                 <th>Portfolio Current Investments</th>
-                <th>Grand Total Results (USD)</th>
-                <th>Grand Total Results (EUR)</th>
-                <th>USD to EUR Conv Rate</th>
-            </tr>
-            </thead>
-            <tbody>
+                <th>Grand Total Results</th>
+        </tr>
+        </thead>
+        <tbody>
             <tr>
-                <td>{{ sum_of_initial_stock_value|add:sum_acquired_value.acquired_value__sum|intcomma }}</td>
-                <td>{{ sum_current_stocks_value|add:sum_recent_value.recent_value__sum|intcomma }}</td>
-                <td>{{ sum_current_stocks_value|add:sum_recent_value.recent_value__sum|sub:sum_of_initial_stock_value|sub:sum_acquired_value.acquired_value__sum|intcomma }}</td>
-                <td>{{ sum_current_stocks_value|add:sum_recent_value.recent_value__sum|sub:sum_of_initial_stock_value|sub:sum_acquired_value.acquired_value__sum|mul:eur_conv_rate|intcomma }}</td>
-                <td>{{ eur_conv_rate }}</td>
+                <td>{{ portfolio_initial }}</td>
+                <td>{{ portfolio_current }}</td>
+                <td>{{ portfolio_total }}
             </tr>
             </tbody>
         </table>
@@ -73,22 +71,20 @@
                 <th>Current Stock Price</th>
                 <th>Current Stock Value</th>
                 <th>Results (USD)</th>
-                <th>Results (EUR)</th>
             </tr>
             </thead>
             <tbody>
             {% for stock in stocks %}
                 <tr>
-                    <td>{{ stock.customer }}</td>
-                    <td>{{ stock.symbol }}</td>
-                    <td>{{ stock.name }}</td>
-                    <td>{{ stock.shares|intcomma }}</td>
-                    <td>{{ stock.purchase_price|intcomma }}</td>
-                    <td>{{ stock.initial_stock_value|intcomma }}</td>
-                    <td>{{ stock.current_stock_price|intcomma }}</td>
-                    <td>{{ stock.current_stock_value|intcomma }}</td>
-                    <td>{{ stock.current_stock_value|sub:stock.initial_stock_value|intcomma }}</td>
-                    <td>{{ stock.current_stock_value|sub:stock.initial_stock_value|mul:eur_conv_rate|intcomma }}</td>
+                    <td>{{ stock.customer }}</td> 
+                    <td>{{ stock.symbol }}</td> 
+                    <td>{{ stock.name }}</td> 
+                    <td>{{ stock.shares }}</td> 
+                    <td>{{ stock.purchase_price }}</td> 
+                    <td>{{ stock.initial_stock_value }}</td>
+                    <td>{{ stock.current_stock_price }}</td>
+                    <td>{{ stock.current_stock_value }}</td>
+                    <td>{{ stock.results_by_stocks }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -99,81 +95,91 @@
         <table class="table table-striped table-bordered table-hover">
             <thead>
             <tr class="bg-info">
-                <th>Total of Initial Stocks</th>
-                <th>Total of Current Stocks</th>
+                <th>Customer</th> 
+                <th>Mutual Funds</th> 
+                <th>Initial Stock Price</th>
+                <th>Value of Current Stocks</th>
                 <th>Results (USD)</th>
-                <th>Results (EUR)</th>
-            </tr>
-            </thead>
-            <tbody>
+                 </tr> 
+        </thead> 
+        <tbody> 
+        {% for mutual in mutuals %}
+            <tr> 
+                <td>{{ mutual.customer }}</td>
+                <td>{{ mutual.mutual }}</td> 
+                <td>{{ mutual.initial_value }}</td> 
+                <td>{{ mutual.current_value }}</td> 
+                <td>{{ mutual.results_by_mutual }}</td>
+            </tr> 
+        {% endfor %}
+        </tbody> 
+    </table>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+        <tr class="bg-info">
+                <th>Initial Total of Mutual Funds</th>
+                <th>Current Total of Mutual Funds</th>
+                <th>Mutual Funds Results</th>
+        </tr>
+        </thead>
+        <tbody>
             <tr>
-                <td>{{ sum_of_initial_stock_value|intcomma }}</td>
-                <td>{{ sum_current_stocks_value|intcomma }}</td>
-                <td>{{ sum_current_stocks_value|sub:sum_of_initial_stock_value|intcomma }}</td>
-                <td>{{ sum_current_stocks_value|sub:sum_of_initial_stock_value|mul:eur_conv_rate|intcomma }}</td>
+                <td>{{ sum_initial_mutual }}</td>
+                <td>{{ sum_current_mutual }}</td>
+                <td>{{ overall_mutual_results }}</td>
             </tr>
-            </tbody>
-        </table>
-    </div>
+        </tbody>
+    </table>
 
-    <div class="row">
-        <h2 style="padding-left: 15Px">Investments Information</h2>
-    </div>
-    <div class="row">
-        <table class="table table-striped table-bordered table-hover">
-            <thead>
-            <tr class="bg-info">
+<div class="row">
+    <h2 style="padding-left: 15Px">Investment Information</h2>
+</div>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+        <tr class="bg-info">
                 <th>Customer</th>
                 <th>Category</th>
                 <th>Description</th>
-                <th>Acquired Value</th>
-                <th>Acquired Date</th>
-                <th>Recent Value</th>
-                <th>Recent Date</th>
-                <th>Results (USD)</th>
-                <th>Results (EUR)</th>
-
+                <th>Acquired value</th>
+                <th>Acquired date</th>
+                <th>Recent value</th>
+                <th>Recent date</th>
+                <th>Results</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for investment in investments %}
+            <tr>
+                <td>{{ investment.customer }}</td>
+                <td>{{ investment.category }}</td>
+                <td>{{ investment.description }}</td>
+                <td>{{ investment.acquired_value }}</td>
+                <td>{{ investment.acquired_date }}</td>
+                <td>{{ investment.recent_value }}</td>
+                <td>{{ investment.recent_date }}</td>
+                <td>{{ investment.results_by_investment }}</td>
             </tr>
-            </thead>
-            <tbody>
-            {% for investment in investments %}
-                <tr>
-                    <td>{{ investment.customer }}</td>
-                    <td>{{ investment.category }}</td>
-                    <td>{{ investment.description }}</td>
-                    <td>{{ investment.acquired_value|intcomma }}</td>
-                    <td>{{ investment.acquired_date }}</td>
-                    <td>{{ investment.recent_value|intcomma}}</td>
-                    <td>{{ investment.recent_date }}</td>
-                    <td>{{ investment.recent_value|sub:investment.acquired_value|intcomma }}</td>
-                    <td>{{ investment.recent_value|sub:investment.acquired_value|mul:eur_conv_rate|intcomma }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <div class="row">
-        <table class="table table-striped table-bordered table-hover">
-            <thead>
-            <tr class="bg-info">
+        {% endfor %}
+        </tbody>
+    </table>
+<div>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+        <tr class="bg-info">
                 <th>Total of Initial Investments</th>
                 <th>Total of Current Investments</th>
-                <th>Results (USD)</th>
-                <th>Results (EUR)</th>
-            </tr>
-            </thead>
-            <tbody>
+                <th>Total Results</th>
+        </tr>
+        </thead>
+        <tbody>
             <tr>
-                <td>{{ sum_acquired_value.acquired_value__sum|intcomma }}</td>
-                <td>{{ sum_recent_value.recent_value__sum|intcomma }}</td>
-                <td>{{ sum_recent_value.recent_value__sum|sub:sum_acquired_value.acquired_value__sum|intcomma }}</td>
-                <td>{{ sum_recent_value.recent_value__sum|sub:sum_acquired_value.acquired_value__sum|mul:eur_conv_rate|intcomma }}</td>
+                <td>{{ sum_acquired_value.acquired_value__sum |intcomma  }}</td>
+                <td>{{ sum_recent_value.recent_value__sum |intcomma  }}</td>
+                <td>{{ overall_investment_results |intcomma  }}</td>
             </tr>
-            </tbody>
-        </table>
-    </div>
-
-    </body>
-    </html>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
 {% endblock %}

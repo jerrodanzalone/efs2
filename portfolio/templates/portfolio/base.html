@@ -70,8 +70,9 @@
             <ul class="nav navbar-nav">
                 <li><a href="{% url 'portfolio:home' %}">Home</a></li>
                 <li><a href="{% url 'portfolio:customer_list' %}">Customers</a></li>
-               <li><a href="{% url 'portfolio:investment_list' %}">Investments</a></li>
+                <li><a href="{% url 'portfolio:investment_list' %}">Investments</a></li>
                 <li><a href="{% url 'portfolio:stock_list' %}">Stocks</a></li>
+                <li><a href="{% url 'portfolio:mutual_list' %}">Mutual Funds</a></li>
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -105,7 +106,7 @@
                                     <h2>Customer</h2>
                                     <p>We see our success in our customers success, it gives us an immense pleasure when
                                         our
-                                        advises
+                                        advice
                                         turn out to be fruitful. </p>
                                     {% if user.is_authenticated %}
                                         <p><a class="btn btn-default" href="{% url 'portfolio:customer_list' %}"
@@ -120,7 +121,9 @@
                                 <img src="{% static "images/nonstock.jpg" %}" alt="non-stock"/>
                                 <div class="caption">
                                     <h2>Non-Stock Investments</h2>
-                                    <p>Our team also provides advises for Non-Stock investments.</p>
+                                    <p>Our team also provides advises for Non-Stock investments.
+
+                                    </p>
                                     <p><a class="btn btn-default" href="{% url 'portfolio:investment_list' %}"
                                            role="button">View
                                         details &raquo;</a></p>
@@ -138,7 +141,18 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div class="col-md-3">
+                            <div class="thumbnail">
+                                <img src="{% static "images/mutual.jpg" %}" alt="mutuals"/>
+                                <div class="caption">
+                                    <h2>Mutual Funds</h2>
+                                    <p>Our Mutual funds are among the best
+                                        in the industry</p>
+                                    <p><a class="btn btn-default" href="{% url 'portfolio:mutual_list' %}" role="button">View
+                                        details &raquo;</a></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             {% endblock %}

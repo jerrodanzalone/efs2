@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ra_oyt66^z^rp^088#6m&4au6om4sobr!0%us--xce1j9i_*+j'
+SECRET_KEY = 'dtuh_+^#a_=$*%2z2w-@=8zftp9m4g#7u8j0at&^bt@v1+fg**'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['jerrodanzalone.pythonanywhere.com', 'localhost', '127.0.0.1', 'alfredanzalone.pythonanywhere.com']
 
 
 # Application definition
@@ -118,12 +118,23 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOGIN_REDIRECT_URL = '/home'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
+#STATIC_URL = '/static/'
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#LOGIN_REDIRECT_URL = '/'
+#CRISPY_TEMPLATE_PACK = 'bootstrap4'
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-LOGIN_REDIRECT_URL = '/'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'static'),
+)
